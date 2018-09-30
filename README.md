@@ -7,6 +7,8 @@ Docker Compose boilerplate
 
 Docker Hubでアカウントを取得して下さい。
 
+GitHubのアカウント名と合わせると分かりやすいので、そうしておくとベストだと思います。
+
 ### Docker for Macのインストール
 
 公式サイトからDocker for Macをダウンロードしてインストールします。

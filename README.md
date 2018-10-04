@@ -45,3 +45,19 @@ http://docs.docker.jp/
 ### コマンドリファレンス的な記事
 
 - [Docker コマンドチートシート](https://qiita.com/wMETAw/items/34ba5c980e2a38e548db)
+
+## 基本操作
+
+後でちゃんと説明とか書きます。
+
+### 初回起動
+
+`docker-compose up --build -d`
+
+### 停止
+
+`docker-compose down`
+
+### 停止（作成されたイメージも削除）
+
+`docker-compose down --rmi all`

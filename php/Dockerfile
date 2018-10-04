@@ -12,3 +12,4 @@ COPY ./10-opcache.ini /etc/php.d/10-opcache.ini
 
 EXPOSE 9000
 CMD ["php-fpm"]
+VOLUME ["/var/run/php-fpm"]

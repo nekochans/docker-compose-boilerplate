@@ -1,0 +1,16 @@
+version: '3'
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "80:80"
+    depends_on:
+      - php
+    volumes:
+      - phpsocket:/var/run/php-fpm
+  php:
+    build: ./php
+    volumes:
+      - phpsocket:/var/run/php-fpm
+volumes:
+  phpsocket:

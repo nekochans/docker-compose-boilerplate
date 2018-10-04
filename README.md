@@ -46,6 +46,13 @@ http://docs.docker.jp/
 
 - [Docker コマンドチートシート](https://qiita.com/wMETAw/items/34ba5c980e2a38e548db)
 
+### docker-composeのリファレンス
+
+複数のコンテナを扱う際は `docker-compose` コマンドを利用します。
+
+- [公式](https://docs.docker.com/compose/)
+- [Docker Compose - docker-compose.yml リファレンス](https://qiita.com/zembutsu/items/9e9d80e05e36e882caaa)
+
 ## 基本操作
 
 後でちゃんと説明とか書きます。

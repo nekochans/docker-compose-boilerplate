@@ -61,6 +61,16 @@ http://docs.docker.jp/
 
 `docker-compose up --build -d`
 
+### 起動
+
+二回目以降は下記のコマンドだけでOKです。
+
+`docker-compose up -d`
+
+ただし `Dockerfile` の内容が書き換わっている場合は再度buildを行う必要があります。
+
+その際には古いimageは不要だと思うので `docker-compose down --rmi all` で古いimageを消してしまってから再度初回実行のコマンドを実行して下さい。
+
 ### 停止
 
 `docker-compose down`

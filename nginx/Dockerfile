@@ -1,14 +1,5 @@
-FROM amazonlinux
+FROM nginx:1.15.5-alpine
 
-LABEL maintainer="https://github.com/nekochans"
+LABEL maintainer="https://github.com/keitakn"
 
-RUN amazon-linux-extras install nginx1.12 -y
-
-COPY config/nginx.conf /etc/nginx/nginx.conf
-COPY config/backend.conf /etc/nginx/conf.d/backend.conf
-
-EXPOSE 80
-
-STOPSIGNAL SIGTERM
-
-CMD ["nginx", "-g", "daemon off;"]
+COPY config/default.conf /etc/nginx/conf.d/default.conf

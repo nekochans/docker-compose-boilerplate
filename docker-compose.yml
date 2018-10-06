@@ -5,12 +5,10 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - app
+      - php
     volumes:
-      - ./data/html:/usr/share/nginx/html
-  app:
-    build: ./app
-    ports:
-      - "9000:9000"
+      - ./data/html:/var/www/html
+  php:
+    build: ./php
     volumes:
-      - ./data/html:/usr/share/nginx/html
+      - ./data/html:/var/www/html

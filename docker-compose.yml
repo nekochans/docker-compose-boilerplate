@@ -1,0 +1,14 @@
+version: '3'
+services:
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - php
+    volumes:
+      - ./data/html:/var/www/html
+  php:
+    build: ./php
+    volumes:
+      - ./data/html:/var/www/html

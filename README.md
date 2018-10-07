@@ -114,3 +114,19 @@ Additional .ini files parsed:      /usr/local/etc/php/conf.d/docker-php-ext-mysq
 その為、設定を修正する際は `zz-docker.conf` を修正するほうがトラブルが少ないでしょう。
 
 （参考）[PHPの公式DockerイメージでUNIXソケット通信しようとして罠にハマるの巻](https://yoshinorin.net/2017/03/06/php-official-docker-image-trap/)
+
+## DB用のコンテナについて
+
+`docker-compose.yml` に記載してある `mysql` がそれに該当します。
+
+ローカルPCにmysqlのクライアントがインストールされていれば以下のコマンドでローカルから接続する事も可能です。
+
+`mysql -u sample_user -h 0.0.0.0 -p sample_db`
+
+余談ですが、本番環境化ではDBのようなデータの永続化が重要な物をコンテナで運用するのは向いていません。
+
+その為、本プロジェクトではMySQLのコンテナは開発環境のみの利用という想定です。
+
+本番環境化では [Amazon Aurora](https://aws.amazon.com/jp/rds/aurora/) のようなサービスを使うのが無難です。
+
+MySQLコンテナのバージョンにあえて5.7系を使っている理由はAmazon Auroraのバージョンが現時点ではMySQL 5.7互換しか存在しない為です。

@@ -18,7 +18,7 @@ services:
     volumes:
       - ./data/html:/var/www/html
   mysql:
-    image: mysql:5.7.23
+    build: ./mysql
     env_file: .env
     ports:
       - "3306:3306"

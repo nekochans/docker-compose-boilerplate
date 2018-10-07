@@ -130,3 +130,23 @@ Additional .ini files parsed:      /usr/local/etc/php/conf.d/docker-php-ext-mysq
 本番環境化では [Amazon Aurora](https://aws.amazon.com/jp/rds/aurora/) のようなサービスを使うのが無難です。
 
 MySQLコンテナのバージョンにあえて5.7系を使っている理由はAmazon Auroraのバージョンが現時点ではMySQL 5.7互換しか存在しない為です。
+
+## Webサーバ用のコンテナについて
+
+http://127.0.0.1 でアクセス可能です。
+
+80番ポートをそのまま使っているので、ローカルPCで80番ポートを使っている場合、コンテナの起動に失敗します。
+
+Mac上で `lsof -i :80` を実行してみて下さい。
+
+よくあるのがMacの標準で搭載されているApacheサーバが起動しているケースです。
+
+その場合は `apachectl stop` をMac上で実行して80番ポートを開放して下さい。
+
+これでコンテナが起動出来るハズです。
+
+ただし、OpenIDConnectのProvider等でリダイレクトURIにIPアドレス形式を受け付けないケースでは困る場合があります。
+
+その場合は `.xip.io` を使って http://127.0.0.1.xip.io とするか、もしくは自身のPCの `/etc/hosts` に任意のドメイン名を付けて強引に名前解決をさせる等の工夫が必要です。
+
+ちなみに現時点ではローカルのhttpsに対応していないので、httpsの検証が必要な場合はAWS等のCloudServiceにコンテナをデプロイして確認する必要があります。

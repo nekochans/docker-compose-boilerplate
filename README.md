@@ -114,3 +114,39 @@ Additional .ini files parsed:      /usr/local/etc/php/conf.d/docker-php-ext-mysq
 その為、設定を修正する際は `zz-docker.conf` を修正するほうがトラブルが少ないでしょう。
 
 （参考）[PHPの公式DockerイメージでUNIXソケット通信しようとして罠にハマるの巻](https://yoshinorin.net/2017/03/06/php-official-docker-image-trap/)
+
+## DB用のコンテナについて
+
+`docker-compose.yml` に記載してある `mysql` がそれに該当します。
+
+ローカルPCにmysqlのクライアントがインストールされていれば以下のコマンドでローカルから接続する事も可能です。
+
+`mysql -u sample_user -h 0.0.0.0 -p sample_db`
+
+余談ですが、本番環境化ではDBのようなデータの永続化が重要な物をコンテナで運用するのは向いていません。
+
+その為、本プロジェクトではMySQLのコンテナは開発環境のみの利用という想定です。
+
+本番環境化では [Amazon Aurora](https://aws.amazon.com/jp/rds/aurora/) のようなサービスを使うのが無難です。
+
+MySQLコンテナのバージョンにあえて5.7系を使っている理由はAmazon Auroraのバージョンが現時点ではMySQL 5.7互換しか存在しない為です。
+
+## Webサーバ用のコンテナについて
+
+http://127.0.0.1 でアクセス可能です。
+
+80番ポートをそのまま使っているので、ローカルPCで80番ポートを使っている場合、コンテナの起動に失敗します。
+
+Mac上で `lsof -i :80` を実行してみて下さい。
+
+よくあるのがMacの標準で搭載されているApacheサーバが起動しているケースです。
+
+その場合は `apachectl stop` をMac上で実行して80番ポートを開放して下さい。
+
+これでコンテナが起動出来るハズです。
+
+ただし、OpenIDConnectのProvider等でリダイレクトURIにIPアドレス形式を受け付けないケースでは困る場合があります。
+
+その場合は `.xip.io` を使って http://127.0.0.1.xip.io とするか、もしくは自身のPCの `/etc/hosts` に任意のドメイン名を付けて強引に名前解決をさせる等の工夫が必要です。
+
+ちなみに現時点ではローカルのhttpsに対応していないので、httpsの検証が必要な場合はAWS等のCloudServiceにコンテナをデプロイして確認する必要があります。

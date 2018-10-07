@@ -10,5 +10,21 @@ services:
       - ./data/html:/var/www/html
   php:
     build: ./php
+    env_file: .env
+    environment:
+      DATABASE_HOST: mysql
+    depends_on:
+      - mysql
     volumes:
       - ./data/html:/var/www/html
+  mysql:
+    build: ./mysql
+    env_file: .env
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./mysql/initial.sql:/docker-entrypoint-initdb.d/initial.sql
+
+volumes:
+  mysql-data:

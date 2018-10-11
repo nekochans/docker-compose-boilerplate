@@ -9,6 +9,7 @@ RUN set -x && \
   pecl install xdebug && \
   docker-php-ext-enable xdebug && \
   curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
+  composer global require hirak/prestissimo && \
   mkdir -p /opt/qiita-stocker-backend
 
 COPY config/php.ini /usr/local/etc/php/php.ini

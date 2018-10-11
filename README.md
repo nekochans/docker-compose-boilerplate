@@ -15,6 +15,33 @@ GitHubのアカウント名と合わせると分かりやすいので、そう�
 
 https://docs.docker.com/docker-for-mac/install/
 
+### 本プロジェクトを `git clone` しておく
+
+本プロジェクトは以下のプロジェクトを動作させる事が出来ます。
+そのため、以下の関連プロジェクトも `git clone` しておく必要があります。
+
+- [qiita-stocker-backend](https://github.com/nekochans/qiita-stocker-backend)
+
+注意点としては本プロジェクトと関連プロジェクトは同階層に存在するように配置してください。
+
+```
+├── docker-compose-boilerplate
+├── qiita-stocker-backend
+```
+
+こうしないと `volume` の作成に失敗してホストPCのディレクトリをコンテナ内にマウント出来なくなってしまいます。 
+
+### [qiita-stocker-backend](https://github.com/nekochans/qiita-stocker-backend) の `.env` を書き換える
+
+以下の部分を下記のように書き換えて下さい。
+
+```
+APP_URL=http://127.0.0.1
+DB_HOST=mysql
+```
+
+`.env.testing` にも同様の変更を行っておく必要があります。
+
 ## 参考資料
 
 ### 公式（英語）

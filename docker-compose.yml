@@ -7,7 +7,7 @@ services:
     depends_on:
       - php
     volumes:
-      - ./data/html:/var/www/html
+      - ../qiita-stocker-backend:/opt/qiita-stocker-backend
   php:
     build: ./php
     env_file: .env
@@ -16,7 +16,7 @@ services:
     depends_on:
       - mysql
     volumes:
-      - ./data/html:/var/www/html
+      - ../qiita-stocker-backend:/opt/qiita-stocker-backend
   mysql:
     build: ./mysql
     env_file: .env

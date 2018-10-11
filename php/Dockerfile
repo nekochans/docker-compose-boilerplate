@@ -8,7 +8,8 @@ RUN set -x && \
   docker-php-ext-install opcache mysqli pdo pdo_mysql xml mbstring curl session tokenizer json && \
   pecl install xdebug && \
   docker-php-ext-enable xdebug && \
-  curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
+  curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
+  mkdir -p /opt/qiita-stocker-backend
 
 COPY config/php.ini /usr/local/etc/php/php.ini
 COPY config/docker-php-ext-opcache.ini /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini

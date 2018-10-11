@@ -121,7 +121,9 @@ Additional .ini files parsed:      /usr/local/etc/php/conf.d/docker-php-ext-mysq
 
 ローカルPCにmysqlのクライアントがインストールされていれば以下のコマンドでローカルから接続する事も可能です。
 
-`mysql -u sample_user -h 0.0.0.0 -p sample_db`
+`mysql -u root -h 127.0.0.1 -p`
+
+パスワードは `.env` を参照してください。
 
 余談ですが、本番環境化ではDBのようなデータの永続化が重要な物をコンテナで運用するのは向いていません。
 

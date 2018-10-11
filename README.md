@@ -131,6 +131,23 @@ Additional .ini files parsed:      /usr/local/etc/php/conf.d/docker-php-ext-mysq
 
 MySQLコンテナのバージョンにあえて5.7系を使っている理由はAmazon Auroraのバージョンが現時点ではMySQL 5.7互換しか存在しない為です。
 
+`docker-compose.yml` の以下の記述に注目してください。
+
+```yaml
+volumes:
+  mysql-data:
+```
+
+これはトップレベルvolumeと呼ばれる方法でこうする事で、ホストマシン（Mac側）のDockerシステムディレクトリ配下でデータを管理する事が出来ます。
+
+この記法のメリットはvolumeが隠蔽されるので、間違って削除したりする心配が少なくなる事です。
+
+データを一括で削除したい場合は下記のコマンドを実行すればOKです。
+
+`docker volume rm $(docker volume ls -qf dangling=true)`
+
+ただし、このコマンドはコンテナが起動していると使えないので、事前にコンテナの削除を行っておいてください。
+
 ## Webサーバ用のコンテナについて
 
 http://127.0.0.1 でアクセス可能です。

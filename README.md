@@ -15,6 +15,33 @@ GitHubのアカウント名と合わせると分かりやすいので、そう�
 
 https://docs.docker.com/docker-for-mac/install/
 
+### 本プロジェクトを `git clone` しておく
+
+本プロジェクトは以下のプロジェクトを動作させる事が出来ます。
+そのため、以下の関連プロジェクトも `git clone` しておく必要があります。
+
+- [qiita-stocker-backend](https://github.com/nekochans/qiita-stocker-backend)
+
+注意点としては本プロジェクトと関連プロジェクトは同階層に存在するように配置してください。
+
+```
+├── docker-compose-boilerplate
+├── qiita-stocker-backend
+```
+
+こうしないと `volume` の作成に失敗してホストPCのディレクトリをコンテナ内にマウント出来なくなってしまいます。 
+
+### [qiita-stocker-backend](https://github.com/nekochans/qiita-stocker-backend) の `.env` を書き換える
+
+以下の部分を下記のように書き換えて下さい。
+
+```
+APP_URL=http://127.0.0.1
+DB_HOST=mysql
+```
+
+`.env.testing` にも同様の変更を行っておく必要があります。
+
 ## 参考資料
 
 ### 公式（英語）
@@ -121,7 +148,9 @@ Additional .ini files parsed:      /usr/local/etc/php/conf.d/docker-php-ext-mysq
 
 ローカルPCにmysqlのクライアントがインストールされていれば以下のコマンドでローカルから接続する事も可能です。
 
-`mysql -u sample_user -h 0.0.0.0 -p sample_db`
+`mysql -u root -h 127.0.0.1 -p`
+
+パスワードは `.env` を参照してください。
 
 余談ですが、本番環境化ではDBのようなデータの永続化が重要な物をコンテナで運用するのは向いていません。
 
@@ -130,6 +159,23 @@ Additional .ini files parsed:      /usr/local/etc/php/conf.d/docker-php-ext-mysq
 本番環境化では [Amazon Aurora](https://aws.amazon.com/jp/rds/aurora/) のようなサービスを使うのが無難です。
 
 MySQLコンテナのバージョンにあえて5.7系を使っている理由はAmazon Auroraのバージョンが現時点ではMySQL 5.7互換しか存在しない為です。
+
+`docker-compose.yml` の以下の記述に注目してください。
+
+```yaml
+volumes:
+  mysql-data:
+```
+
+これはトップレベルvolumeと呼ばれる方法でこうする事で、ホストマシン（Mac側）のDockerシステムディレクトリ配下でデータを管理する事が出来ます。
+
+この記法のメリットはvolumeが隠蔽されるので、間違って削除したりする心配が少なくなる事です。
+
+データを一括で削除したい場合は下記のコマンドを実行すればOKです。
+
+`docker volume rm $(docker volume ls -qf dangling=true)`
+
+ただし、このコマンドはコンテナが起動していると使えないので、事前にコンテナの削除を行っておいてください。
 
 ## Webサーバ用のコンテナについて
 
@@ -150,3 +196,34 @@ Mac上で `lsof -i :80` を実行してみて下さい。
 その場合は `.xip.io` を使って http://127.0.0.1.xip.io とするか、もしくは自身のPCの `/etc/hosts` に任意のドメイン名を付けて強引に名前解決をさせる等の工夫が必要です。
 
 ちなみに現時点ではローカルのhttpsに対応していないので、httpsの検証が必要な場合はAWS等のCloudServiceにコンテナをデプロイして確認する必要があります。
+
+## コンテナ内で作業するには
+
+コンテナ内でDB Migrationを実施する例を元に説明します。
+
+`docker ps -a` を実行してコンテナのIDを取得します。
+
+↓のような実行結果が得られるハズです。
+
+```
+CONTAINER ID        IMAGE                              COMMAND                  CREATED             STATUS              PORTS                               NAMES
+37ff19bd7c59        docker-compose-boilerplate_nginx   "nginx -g 'daemon of…"   17 seconds ago      Up 16 seconds       0.0.0.0:80->80/tcp                  docker-compose-boilerplate_nginx_1
+9b74085e43f3        docker-compose-boilerplate_php     "docker-php-entrypoi…"   17 seconds ago      Up 17 seconds       9000/tcp                            docker-compose-boilerplate_php_1
+1ccb47b11c02        docker-compose-boilerplate_mysql   "docker-entrypoint.s…"   18 seconds ago      Up 17 seconds       0.0.0.0:3306->3306/tcp, 33060/tcp   docker-compose-boilerplate_mysql_1
+```
+
+`docker exec -it` でコンテナの中に入ります。
+
+アプリケーションが起動しているPHPのコンテナIDは `9b74085e43f3` なので `docker exec -it 9b74085e43f3 sh` で接続します。
+
+`cd /opt/qiita-stocker-backend/` でアプリケーションディレクトリに移動します。
+
+このディレクトリはホストPCの `qiita-stocker-backend` と同期していますので、ローカルでファイルを編集するとそれがコンテナ内にも反映されます。
+
+`composer install` を実行して外部ライブラリをインストールします。
+
+`php artisan migrate` を実行します。
+
+テスト用DB為に `php artisan --env=testing migrate` も実行しておきましょう。
+
+`composer test` でテストが成功すれば正常に環境が構築出来ています。

@@ -169,3 +169,34 @@ Mac上で `lsof -i :80` を実行してみて下さい。
 その場合は `.xip.io` を使って http://127.0.0.1.xip.io とするか、もしくは自身のPCの `/etc/hosts` に任意のドメイン名を付けて強引に名前解決をさせる等の工夫が必要です。
 
 ちなみに現時点ではローカルのhttpsに対応していないので、httpsの検証が必要な場合はAWS等のCloudServiceにコンテナをデプロイして確認する必要があります。
+
+## コンテナ内で作業するには
+
+コンテナ内でDB Migrationを実施する例を元に説明します。
+
+`docker ps -a` を実行してコンテナのIDを取得します。
+
+↓のような実行結果が得られるハズです。
+
+```
+CONTAINER ID        IMAGE                              COMMAND                  CREATED             STATUS              PORTS                               NAMES
+37ff19bd7c59        docker-compose-boilerplate_nginx   "nginx -g 'daemon of…"   17 seconds ago      Up 16 seconds       0.0.0.0:80->80/tcp                  docker-compose-boilerplate_nginx_1
+9b74085e43f3        docker-compose-boilerplate_php     "docker-php-entrypoi…"   17 seconds ago      Up 17 seconds       9000/tcp                            docker-compose-boilerplate_php_1
+1ccb47b11c02        docker-compose-boilerplate_mysql   "docker-entrypoint.s…"   18 seconds ago      Up 17 seconds       0.0.0.0:3306->3306/tcp, 33060/tcp   docker-compose-boilerplate_mysql_1
+```
+
+`docker exec -it` でコンテナの中に入ります。
+
+アプリケーションが起動しているPHPのコンテナIDは `9b74085e43f3` なので `docker exec -it 9b74085e43f3 sh` で接続します。
+
+`cd /opt/qiita-stocker-backend/` でアプリケーションディレクトリに移動します。
+
+このディレクトリはホストPCの `qiita-stocker-backend` と同期していますので、ローカルでファイルを編集するとそれがコンテナ内にも反映されます。
+
+`composer install` を実行して外部ライブラリをインストールします。
+
+`php artisan migrate` を実行します。
+
+テスト用DB為に `php artisan --env=testing migrate` も実行しておきましょう。
+
+`composer test` でテストが成功すれば正常に環境が構築出来ています。

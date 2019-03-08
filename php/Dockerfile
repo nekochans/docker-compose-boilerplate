@@ -1,4 +1,4 @@
-FROM php:7.2.10-fpm-alpine
+FROM php:7.3.2-fpm-alpine
 
 LABEL maintainer="https://github.com/keitakn"
 
@@ -15,3 +15,5 @@ RUN set -x && \
 COPY config/php.ini /usr/local/etc/php/php.ini
 COPY config/docker-php-ext-opcache.ini /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
 COPY config/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
+WORKDIR /opt/qiita-stocker-backend
